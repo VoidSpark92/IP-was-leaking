@@ -2,48 +2,173 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚨 CRITICAL SYSTEM WARNING 🚨</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TERMINAL://NETWORK_EXPLOIT_METRICS</title>
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #0d0000;
-            color: #ff3333;
+            background-color: #050000;
+            color: #33ff33;
             font-family: 'Courier New', Courier, monospace;
-            padding: 20px;
-            text-align: center;
-        }
-        .warning-box {
-            border: 2px solid #ff3333;
+            font-size: 11px;
+            line-height: 1.5;
             padding: 15px;
-            margin-top: 50px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px #ff3333;
+            overflow-x: hidden;
+            background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 3px, 6px 100%;
         }
-        .loading {
+        .header {
+            border-bottom: 1px solid #33ff33;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .danger-alert {
+            color: #ff3333;
+            border: 1px dashed #ff3333;
+            padding: 10px;
+            margin-bottom: 15px;
             font-weight: bold;
-            color: #ffff00;
+            animation: blink 1.5s infinite;
+        }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .log-container {
+            display: flex;
+            flex-direction: column;
+        }
+        .line { margin-bottom: 4px; word-break: break-all; white-space: pre-wrap; }
+        .system { color: #888888; }
+        .warning { color: #ffff00; }
+        .critical { color: #ff3333; font-weight: bold; }
+        .success { color: #00ffff; }
+        #cursor {
+            display: inline-block;
+            width: 8px;
+            height: 13px;
+            background: #33ff33;
+            vertical-align: middle;
+            animation: blink 0.8s infinite;
+        }
+        .footer-status {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            background: #110000;
+            border-top: 1px solid #ff3333;
+            padding: 8px;
+            font-size: 10px;
+            color: #ff5555;
+            display: flex;
+            justify-content: space-between;
         }
     </style>
 </head>
 <body>
 
-    <div class="warning-box">
-        <h2>[!] ALERT: IP INFRASTRUCTURE EXPOSED [!]</h2>
-        <p>A security breach has leaked your mobile device network packets.</p>
-        <hr color="#ff3333">
-        
-        <p><strong>DEVICE DETECTED:</strong> <span id="device-info">Fetching...</span></p>
-        <p><strong>SCREEN RESOLUTION:</strong> <span id="screen-info">Fetching...</span></p>
-        <p><strong>CONNECTION STATUS:</strong> <span class="loading">UNSECURED (PACKETS LEAKING)</span></p>
-        
-        <hr color="#ff3333">
-        <p style="color: #ffff00; font-size: 14px;">[!] DO NOT CLOSE THIS PAGE UNTIL PROTOCOL IS TERMINATED [-]</p>
+    <div class="header">
+        <div>[ROOT@CORE_RECON_OS:~]$ ./payload_diagnostics.sh</div>
+        <div>STATION ID: <span id="hardware-vendor">DETECTING...</span></div>
+        <div>SUBSYSTEM: MOBILE_KERNEL_X86_64</div>
+    </div>
+
+    <div class="danger-alert" id="alert-box" style="display: none;">
+        [!] CRITICAL WARNING: LOCAL IP INFRASTRUCTURE IS LEAKING PACKETS TO PUBLIC ROUTERS
+    </div>
+
+    <div class="log-container" id="terminal-logs"></div>
+    <span id="cursor"></span>
+    <div style="height: 60px;"></div> <!-- Spacer -->
+
+    <div class="footer-status">
+        <span>STATUS: EXPORTING_DATA</span>
+        <span id="progress-percent">0%</span>
     </div>
 
     <script>
-        // Phone ka model aur screen size nikalne ka code
-        document.getElementById('device-info').innerText = navigator.userAgent.split(')')[0].split('(')[1] || "Mobile Device";
-        document.getElementById('screen-info').innerText = window.screen.width + "x" + window.screen.height + " Pixels";
+        const logsContainer = document.getElementById('terminal-logs');
+        const progressPercent = document.getElementById('progress-percent');
+        const alertBox = document.getElementById('alert-box');
+        
+        // Mobile architecture details fetch karne ka complex logic
+        const ua = navigator.userAgent;
+        let deviceName = "Generic Mobile Device";
+        if (ua.match(/Android/i)) {
+            const match = ua.match(/Android\s([0-9\.]+)/);
+            deviceName = `Android OS v${match ? match[1] : ''}`;
+        } else if (ua.match(/iPhone/i)) {
+            deviceName = "Apple iOS Device (iPhone Architecture)";
+        }
+        document.getElementById('hardware-vendor').innerText = deviceName.toUpperCase();
+
+        // Real-looking massive logs sequence
+        const linesData = [
+            { text: "Initializing kernel exploit module v2.8.4-release...", type: "system", delay: 200 },
+            { text: "Mapping CPU registers and local memory layout...", type: "system", delay: 400 },
+            { text: `[+] TARGET HARDWARE ARCHITECTURE: ${deviceName}`, type: "success", delay: 300 },
+            { text: `[+] RESOLUTION CHECK: ${window.screen.width}x${window.screen.height} (Display buffer attached)`, type: "success", delay: 200 },
+            { text: "Testing WebSocket gateway connection at port 443...", type: "system", delay: 500 },
+            { text: "Connection stable. Tunneling over secure node layers...", type: "success", delay: 300 },
+            { text: "[!] WARNING: Anonymous routing handshake failed.", type: "warning", delay: 600 },
+            { text: "[!] REMOTE GATEWAY IS ATTEMPTING BACKTRACE TO LOCAL ROUTER.", type: "critical", delay: 800 },
+            { text: "Spawning background listener daemon 'syslogd_net'...", type: "system", delay: 400 },
+            { text: "Fetching baseband configuration keys...", type: "system", delay: 200 },
+            { text: "--------------------------------------------------------", type: "system", delay: 100 },
+            { text: "RUNNING REAL-TIME PACKET CAPTURE (TCPDump emulation)", type: "warning", delay: 400 },
+            { text: "--------------------------------------------------------", type: "system", delay: 100 },
+            { text: "11:44:02.105 IP packet_inbound > local_node.internal: Flags [S], seq 3829102", type: "system", delay: 150 },
+            { text: "11:44:02.109 IP response_leak > tracking_hub.outbound: Flags [P.], seq 102:248", type: "critical", delay: 100 },
+            { text: `[CRITICAL] IP INFRASTRUCTURE METRICS ACCESSIBLE TO THE PUBLIC INTERNET`, type: "critical", delay: 700 },
+            { text: "Dumping volatile system environment variables...", type: "system", delay: 300 },
+            { text: "USER_AGENT=" + ua.slice(0, 45) + "...", type: "system", delay: 150 },
+            { text: "LANG=en-US,en;q=0.9 \nPLATFORM=" + navigator.platform, type: "system", delay: 200 },
+            { text: "SCREEN_DEPTH=" + window.screen.colorDepth + "-bit color architecture", type: "system", delay: 100 },
+            { text: "[+] Core decryption memory pointer located at 0x7FFF5FBFF608", type: "success", delay: 500 },
+            { text: "Executing secure stack dump to remote receiver...", type: "warning", delay: 400 },
+            { text: "SENDING MEMORY BLOCK [0x001A] -> [ SUCCESS ]", type: "success", delay: 100 },
+            { text: "SENDING MEMORY BLOCK [0x00F3] -> [ SUCCESS ]", type: "success", delay: 50 },
+            { text: "SENDING MEMORY BLOCK [0x19AB] -> [ SUCCESS ]", type: "success", delay: 50 },
+            { text: "SENDING MEMORY BLOCK [0x7C2E] -> [ FAILED - RETRYING ]", type: "critical", delay: 400 },
+            { text: "SENDING MEMORY BLOCK [0x7C2E] -> [ FORCE OVERRIDE SUCCESS ]", type: "success", delay: 200 },
+            { text: "--------------------------------------------------------", type: "system", delay: 100 },
+            { text: "[!] EXPLOIT PROTOCOL TERMINATED AT 100%. LOCAL GATEWAYS BREACHED.", type: "critical", delay: 800 },
+            { text: "[!] All collected device variables packaged and broadcasted.", type: "critical", delay: 400 },
+            { text: "Connection closed gracefully. Clearing trace logs...", type: "system", delay: 600 },
+            { text: "[+] DONE. System vulnerability metrics completely open.", type: "success", delay: 300 }
+        ];
+
+        let currentIndex = 0;
+        let progress = 0;
+
+        function printLine() {
+            if (currentIndex < linesData.length) {
+                const currentLine = linesData[currentIndex];
+                const lineElement = document.createElement('div');
+                lineElement.className = `line ${currentLine.type}`;
+                lineElement.innerText = currentLine.text;
+                logsContainer.appendChild(lineElement);
+                
+                // Auto scroll down to keep looking like a real terminal
+                window.scrollTo(0, document.body.scrollHeight);
+
+                // Alert box ko mid-way me open karne ke liye
+                if (currentLine.text.includes("[CRITICAL] IP")) {
+                    alertBox.style.display = "block";
+                    document.body.style.backgroundColor = "#1a0000"; // Screen thodi red ho jayegi danger look ke liye
+                }
+
+                // Progress control
+                progress = Math.min(100, Math.floor((currentIndex / linesData.length) * 100));
+                progressPercent.innerText = `${progress}%`;
+
+                currentIndex++;
+                setTimeout(printLine, currentLine.delay);
+            } else {
+                progressPercent.innerText = "100% COMPLETE";
+                progressPercent.style.color = "#33ff33";
+            }
+        }
+
+        // Script starting speed buffer
+        setTimeout(printLine, 1000);
     </script>
 </body>
 </html>
