@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚨 CRITICAL SYSTEM WARNING 🚨</title>
+    <style>
+        body {
+            background-color: #0d0000;
+            color: #ff3333;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            text-align: center;
+        }
+        .warning-box {
+            border: 2px solid #ff3333;
+            padding: 15px;
+            margin-top: 50px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #ff3333;
+        }
+        .loading {
+            font-weight: bold;
+            color: #ffff00;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="warning-box">
+        <h2>[!] ALERT: IP INFRASTRUCTURE EXPOSED [!]</h2>
+        <p>A security breach has leaked your mobile device network packets.</p>
+        <hr color="#ff3333">
+        
+        <p><strong>DEVICE DETECTED:</strong> <span id="device-info">Fetching...</span></p>
+        <p><strong>SCREEN RESOLUTION:</strong> <span id="screen-info">Fetching...</span></p>
+        <p><strong>CONNECTION STATUS:</strong> <span class="loading">UNSECURED (PACKETS LEAKING)</span></p>
+        
+        <hr color="#ff3333">
+        <p style="color: #ffff00; font-size: 14px;">[!] DO NOT CLOSE THIS PAGE UNTIL PROTOCOL IS TERMINATED [-]</p>
+    </div>
+
+    <script>
+        // Phone ka model aur screen size nikalne ka code
+        document.getElementById('device-info').innerText = navigator.userAgent.split(')')[0].split('(')[1] || "Mobile Device";
+        document.getElementById('screen-info').innerText = window.screen.width + "x" + window.screen.height + " Pixels";
+    </script>
+</body>
+</html>
